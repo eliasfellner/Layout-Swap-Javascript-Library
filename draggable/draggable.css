@@ -94,7 +94,6 @@
     background: #34343E;
     border-radius: 0.125em;
     background-clip: padding-box;
-
     margin-right: 1em
 }
 
@@ -129,10 +128,4 @@
 .button--indent {
     background: #363642;
     box-shadow: inset 0 1px 1px #33333D, inset 0 -1px 0 #404049;
-}
-
-.button--slicein {
-    background: none;
-    background-image: linear-gradient(to right, #363642, #3B3B47);
-    box-shadow: inset 1px 0 1px #33333D;
 }

@@ -80,9 +80,10 @@ function loadSavedData() {
 
 
 function swapContent(div1, div2){
-    let change = div1.html();
-    div1.html(div2.html());
-    div2.html(change);
+    div1.swap(div2);
+    // let change = div1.html();
+    // div1.html(div2.html());
+    // div2.html(change);
 }
 
 function startEditMode(){
@@ -95,6 +96,11 @@ function endEditMode(){
     let draggableDivs = $(".draggable");
     draggableDivs.draggable("disable");
     draggableDivs.removeClass("editModeActive");
+}
+
+function resetLocalStorage(){
+    changePlacesBack();
+    localStorage.removeItem("draggableChanges");
 }
 
 function addSettingsHTML(){
@@ -114,24 +120,30 @@ function addSettingsHTML(){
     let modalBT1 = $(document.createElement("button"));
     let modalBT2 = $(document.createElement("button"));
     let modalClose = $(document.createElement("button"));
+    let resetChanges = $(document.createElement("button"));
 
     modalBT1.html("Start Edit Mode");
     modalBT2.html("End Edit Mode");
     modalClose.html("Close");
+    resetChanges.html("Reset Changes");
     modalBT1.addClass("button button--lighten");
     modalBT2.addClass("button button--lighten");
     modalClose.addClass("button button--lighten");
+    resetChanges.addClass("button button--lighten");
     modalBT1.prop("id", "startEdit");
     modalBT2.prop("id", "endEdit");
     modalClose.prop("id", "modal-close");
+    resetChanges.prop("id", "resetChanges");
     modalBT1.click(startEditMode);
     modalBT2.click(endEditMode);
+    resetChanges.click(resetLocalStorage);
 
 
     //append the divs
     modalContent[0].appendChild(modalBT1[0]);
     modalContent[0].appendChild(modalBT2[0]);
     modalContent[0].appendChild(modalClose[0]);
+    modalContent[0].appendChild(resetChanges[0]);
     modal[0].appendChild(modalContent[0]);
 
     settings.click(function(){
@@ -150,3 +162,8 @@ function addSettingsHTML(){
     document.body.appendChild(settings[0]);
     document.body.appendChild(modal[0]);
 }
+
+$.fn.swap = function (elem) {
+    elem = elem.jquery ? elem : $(elem);
+    $(document.createTextNode('')).insertBefore(this).before(elem.before(this)).remove();
+};
