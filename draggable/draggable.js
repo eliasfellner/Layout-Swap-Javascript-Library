@@ -9,7 +9,12 @@ $(document).ready(function () {
 function addDraggableFunctionality() {
     //set who can be dragged to whom
     let draggableDivs = $(".draggable");
-    let divsWithSameRatio = new Map();
+
+    //make divs draggable / revert to original position / stack: automatically changes z-index
+    draggableDivs.draggable({
+        revert: true,
+        stack: ".draggable"
+    });
 
     draggableDivs.each(function (index, div) {
         let width = $(div).width();
@@ -19,20 +24,8 @@ function addDraggableFunctionality() {
         let classValue = "drag" + ratio;
         $(div).addClass(classValue);
 
-        if (divsWithSameRatio.has(ratio)) {
-            divsWithSameRatio.get(ratio).push(div);
-        } else {
-            divsWithSameRatio.set(ratio, [div]);
-        }
-    });
-
-    //make divs draggable / revert to original position / stack: automatically changes z-index
-    draggableDivs.draggable({revert: true, stack: ".draggable"});
-
-    //define droppables
-    divsWithSameRatio.forEach(function (value, key) {
-        let acceptableKey = ".drag" + key;
-        $(value).droppable({
+        let acceptableKey = "."+classValue;
+        $(div).droppable({
             accept: acceptableKey,
             classes: {
                 "ui-droppable-active": "dragOverlay",
