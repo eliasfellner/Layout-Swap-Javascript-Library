@@ -2,7 +2,6 @@ $(document).ready(function () {
     addSettingsHTML();
     addDraggableFunctionality();
     changePlacesBack();
-    endEditMode();
 });
 
 
@@ -12,6 +11,7 @@ function addDraggableFunctionality() {
 
     //make divs draggable / revert to original position / stack: automatically changes z-index
     draggableDivs.draggable({
+        disabled: true,
         revert: true,
         stack: ".draggable"
     });
@@ -39,7 +39,7 @@ function addDraggableFunctionality() {
     });
 }
 
-
+//TODO fix this //bubble swap and don't swap if key/value already got swapped
 function changePlacesBack() {
     // Retrieve your data from locaStorage
     let saveData = loadSavedData();
@@ -53,16 +53,19 @@ function changePlacesBack() {
     });
 }
 
-
 function saveLayoutChange(div1, div2) {
     let saveData = loadSavedData()? loadSavedData() : {};
+
+    if (saveData === {}){
+        resetLocalStorage();
+    }
+
     let div1newValue = saveData.hasOwnProperty(div2.attr("id")) ? saveData[div2.attr("id")] : div2.attr("id");
     let div2newValue = saveData.hasOwnProperty(div1.attr("id")) ? saveData[div1.attr("id")] : div1.attr("id");
 
     saveData[div1.attr("id")] = div1newValue;
     saveData[div2.attr("id")] = div2newValue;
 
-    console.log(saveData);
     localStorage.setItem("draggableChanges", JSON.stringify(saveData));
 }
 
@@ -74,9 +77,6 @@ function loadSavedData() {
 
 function swapContent(div1, div2){
     div1.swap(div2);
-    // let change = div1.html();
-    // div1.html(div2.html());
-    // div2.html(change);
 }
 
 function startEditMode(){
