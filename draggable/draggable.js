@@ -13,6 +13,7 @@ function addDraggableFunctionality() {
     draggableDivs.draggable({
         disabled: true,
         revert: true,
+        revertDuration: 0,
         stack: ".draggable"
     });
 
@@ -33,7 +34,7 @@ function addDraggableFunctionality() {
             },
             drop: function (event, ui) {
                 saveLayoutChange($(this), ui.draggable);
-                swapContent($(this), ui.draggable);
+                $(this).swap(ui.draggable);
             }
         });
     });
@@ -45,26 +46,65 @@ function changePlacesBack() {
     let saveData = loadSavedData();
     let alreadySwapped= [];
 
+    let draggableDivs = $(".draggable");
+    let divArrangement = {};
+
+    draggableDivs.each(function (index, div) {
+        divArrangement[$(div).attr("id")] = $(div).attr("id");
+    });
+
+    console.log(divArrangement);
+
     $.each(saveData, function(key, value){
         if ($.inArray(value, alreadySwapped)<0){
-            swapContent($("#" + key),$("#" + value));
+            let key1 = getKeyByValue(divArrangement, key);
+            let key2 = getKeyByValue(divArrangement, value);
+
+            console.log("key1" + key1);
+            console.log("key2" + key2);
+            console.log("--------------");
+
+            let temp = divArrangement[key1];
+            divArrangement[key1] = divArrangement[key2];
+            divArrangement[key2] = temp;
+
+            $("#" + divArrangement[key1]).swap($("#" + divArrangement[key2]));
             alreadySwapped.push(key);
         }
     });
 }
 
 function saveLayoutChange(div1, div2) {
-    let saveData = loadSavedData()? loadSavedData() : {};
+    let saveData = loadSavedData();
 
-    if (saveData === {}){
-        resetLocalStorage();
+    if (saveData === null){
+        setLocalStorageToDefault();
+        saveData = loadSavedData();
     }
 
-    let div1newValue = saveData.hasOwnProperty(div2.attr("id")) ? saveData[div2.attr("id")] : div2.attr("id");
-    let div2newValue = saveData.hasOwnProperty(div1.attr("id")) ? saveData[div1.attr("id")] : div1.attr("id");
+    let key1 = getKeyByValue(saveData, div1.attr("id"));
+    let key2 = getKeyByValue(saveData, div2.attr("id"));
 
-    saveData[div1.attr("id")] = div1newValue;
-    saveData[div2.attr("id")] = div2newValue;
+    let div1newValue = saveData[key2];
+    let div2newValue = saveData[key1];
+
+    saveData[key1] = div1newValue;
+    saveData[key2] = div2newValue;
+
+    localStorage.setItem("draggableChanges", JSON.stringify(saveData));
+}
+
+function getKeyByValue(object, value) {
+    return Object.keys(object).find(key => object[key] === value);
+}
+
+function setLocalStorageToDefault(){
+    let draggableDivs = $(".draggable");
+    let saveData = {};
+
+    draggableDivs.each(function (index, div) {
+        saveData[$(div).attr("id")] = $(div).attr("id");
+    });
 
     localStorage.setItem("draggableChanges", JSON.stringify(saveData));
 }
@@ -72,11 +112,6 @@ function saveLayoutChange(div1, div2) {
 
 function loadSavedData() {
     return JSON.parse(localStorage.getItem("draggableChanges"));
-}
-
-
-function swapContent(div1, div2){
-    div1.swap(div2);
 }
 
 function startEditMode(){
@@ -98,9 +133,9 @@ function resetLocalStorage(){
 
 function addSettingsHTML(){
     //create settings element
-    let settings = $(document.createElement("i"));
+    let settings = $(document.createElement("img"));
     settings.prop("id", "openDraggableModal");
-    settings.addClass("fas fa-cog");
+    settings.prop("src", "https://img.icons8.com/ios/80/000000/automatic-filled.png");
 
     //create modal window (fullscreen)
     let modal = $(document.createElement("div"));
