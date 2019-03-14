@@ -68,8 +68,10 @@ function changePlacesBack() {
             divArrangement[key1] = divArrangement[key2];
             divArrangement[key2] = temp;
 
-            $("#" + divArrangement[key1]).swap($("#" + divArrangement[key2]));
-            alreadySwapped.push(key);
+            if (key1 !== key2){
+                $("#" + key1).swap($("#" + key2));
+                alreadySwapped.push(key);
+            }
         }
     });
 }
@@ -91,7 +93,7 @@ function saveLayoutChange(div1, div2) {
     saveData[key1] = div1newValue;
     saveData[key2] = div2newValue;
 
-    localStorage.setItem("draggableChanges", JSON.stringify(saveData));
+    localStorage.setItem(window.location.href.split("#")[0] , JSON.stringify(saveData));
 }
 
 function getKeyByValue(object, value) {
@@ -106,12 +108,12 @@ function setLocalStorageToDefault(){
         saveData[$(div).attr("id")] = $(div).attr("id");
     });
 
-    localStorage.setItem("draggableChanges", JSON.stringify(saveData));
+    localStorage.setItem(window.location.href.split("#")[0] , JSON.stringify(saveData));
 }
 
 
 function loadSavedData() {
-    return JSON.parse(localStorage.getItem("draggableChanges"));
+    return JSON.parse(localStorage.getItem(window.location.href.split("#")[0] ));
 }
 
 function startEditMode(){
@@ -128,7 +130,7 @@ function endEditMode(){
 
 function resetLocalStorage(){
     changePlacesBack();
-    localStorage.removeItem("draggableChanges");
+    localStorage.removeItem(window.location.href.split("#")[0] );
 }
 
 function addSettingsHTML(){
