@@ -1,8 +1,15 @@
 $(document).ready(function () {
     addSettingsHTML();
+    setRestrictive();
     addDraggableFunctionality();
     changePlacesBack();
 });
+
+let restrictive = true;
+
+function setRestrictive(){
+    restrictive = $("#disableRestrictiveDraggable").length ===0;
+}
 
 
 function addDraggableFunctionality() {
@@ -18,16 +25,19 @@ function addDraggableFunctionality() {
     });
 
     draggableDivs.each(function (index, div) {
-        let width = $(div).width();
-        let height = $(div).height();
-        let divider = (width < height) ? width : height;
-        let ratio = Math.round(width / divider) + "-" + Math.round(height / divider);
-        let classValue = "drag" + ratio;
-        $(div).addClass(classValue);
+        let accceptableKey='';
+        if (restrictive){
+            let width = $(div).width();
+            let height = $(div).height();
+            let divider = (width < height) ? width : height;
+            let ratio = Math.round(width / divider) + "-" + Math.round(height / divider);
+            let classValue = "drag" + ratio;
+            $(div).addClass(classValue);
+            acceptableKey = "." + classValue;
+        }
 
-        let acceptableKey = "." + classValue;
         $(div).droppable({
-            accept: acceptableKey,
+            accept: restrictive ? acceptableKey : '.draggable',
             classes: {
                 "ui-droppable-active": "dragOverlay",
                 "ui-droppable-hover": "dragOverlayActive"
