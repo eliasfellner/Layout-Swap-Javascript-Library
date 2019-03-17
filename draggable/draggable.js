@@ -25,7 +25,7 @@ function addDraggableFunctionality() {
         let classValue = "drag" + ratio;
         $(div).addClass(classValue);
 
-        let acceptableKey = "."+classValue;
+        let acceptableKey = "." + classValue;
         $(div).droppable({
             accept: acceptableKey,
             classes: {
@@ -40,11 +40,10 @@ function addDraggableFunctionality() {
     });
 }
 
-//TODO fix this //bubble swap and don't swap if key/value already got swapped
 function changePlacesBack() {
     // Retrieve your data from locaStorage
     let saveData = loadSavedData();
-    let alreadySwapped= [];
+    let alreadySwapped = [];
 
     let draggableDivs = $(".draggable");
     let divArrangement = {};
@@ -53,22 +52,16 @@ function changePlacesBack() {
         divArrangement[$(div).attr("id")] = $(div).attr("id");
     });
 
-    console.log(divArrangement);
-
-    $.each(saveData, function(key, value){
-        if ($.inArray(value, alreadySwapped)<0){
+    $.each(saveData, function (key, value) {
+        if ($.inArray(value, alreadySwapped) < 0) {
             let key1 = getKeyByValue(divArrangement, key);
             let key2 = getKeyByValue(divArrangement, value);
-
-            console.log("key1" + key1);
-            console.log("key2" + key2);
-            console.log("--------------");
 
             let temp = divArrangement[key1];
             divArrangement[key1] = divArrangement[key2];
             divArrangement[key2] = temp;
 
-            if (key1 !== key2){
+            if (key1 !== key2) {
                 $("#" + key1).swap($("#" + key2));
                 alreadySwapped.push(key);
             }
@@ -79,7 +72,7 @@ function changePlacesBack() {
 function saveLayoutChange(div1, div2) {
     let saveData = loadSavedData();
 
-    if (saveData === null){
+    if (saveData === null) {
         setLocalStorageToDefault();
         saveData = loadSavedData();
     }
@@ -93,14 +86,14 @@ function saveLayoutChange(div1, div2) {
     saveData[key1] = div1newValue;
     saveData[key2] = div2newValue;
 
-    localStorage.setItem(window.location.href.split("#")[0] , JSON.stringify(saveData));
+    localStorage.setItem(window.location.href.split("#")[0], JSON.stringify(saveData));
 }
 
 function getKeyByValue(object, value) {
     return Object.keys(object).find(key => object[key] === value);
 }
 
-function setLocalStorageToDefault(){
+function setLocalStorageToDefault() {
     let draggableDivs = $(".draggable");
     let saveData = {};
 
@@ -108,32 +101,43 @@ function setLocalStorageToDefault(){
         saveData[$(div).attr("id")] = $(div).attr("id");
     });
 
-    localStorage.setItem(window.location.href.split("#")[0] , JSON.stringify(saveData));
+    localStorage.setItem(window.location.href.split("#")[0], JSON.stringify(saveData));
 }
 
 
 function loadSavedData() {
-    return JSON.parse(localStorage.getItem(window.location.href.split("#")[0] ));
+    return JSON.parse(localStorage.getItem(window.location.href.split("#")[0]));
 }
 
-function startEditMode(){
+function startEditMode() {
     let draggableDivs = $(".draggable");
     draggableDivs.draggable("enable");
     draggableDivs.addClass("editModeActive");
 }
 
-function endEditMode(){
+function endEditMode() {
     let draggableDivs = $(".draggable");
     draggableDivs.draggable("disable");
     draggableDivs.removeClass("editModeActive");
 }
 
-function resetLocalStorage(){
-    changePlacesBack();
+function resetLocalStorage() {
+    // Retrieve your data from locaStorage
+    let saveData = loadSavedData();
+    let divArrangement = Object.assign({}, saveData); //copying the object so that there's no issue when iterating through
+
+    $.each(saveData, function (key, value) {
+        if (key !== divArrangement[key]) {
+            $("#" + value).swap($("#" + getKeyByValue(divArrangement, value)));
+            divArrangement[getKeyByValue(divArrangement, key)] = value;
+            divArrangement[key] = key;
+        }
+    });
+
     localStorage.removeItem(window.location.href.split("#")[0] );
 }
 
-function addSettingsHTML(){
+function addSettingsHTML() {
     //create settings element
     let settings = $(document.createElement("img"));
     settings.prop("id", "openDraggableModal");
@@ -176,15 +180,15 @@ function addSettingsHTML(){
     modalContent[0].appendChild(resetChanges[0]);
     modal[0].appendChild(modalContent[0]);
 
-    settings.click(function(){
+    settings.click(function () {
         modal.addClass("showModal");
     });
 
-    modalClose.click(function(){
-       modal.removeClass("showModal");
+    modalClose.click(function () {
+        modal.removeClass("showModal");
     });
 
-    modal.click(function(){
+    modal.click(function () {
         modal.removeClass("showModal");
     });
 
