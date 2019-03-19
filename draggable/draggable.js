@@ -1,6 +1,6 @@
 $(document).ready(function () {
-    addSettingsHTML();
     setRestrictive();
+    addSettingsHTML();
     addDraggableFunctionality();
     changePlacesBack();
 });
@@ -25,7 +25,6 @@ function addDraggableFunctionality() {
     });
 
     draggableDivs.each(function (index, div) {
-        let accceptableKey='';
         if (restrictive){
             let width = $(div).width();
             let height = $(div).height();
