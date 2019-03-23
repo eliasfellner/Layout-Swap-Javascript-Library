@@ -52,10 +52,11 @@ function addSwappableFunctionality() {
 function changePlacesBack() {
     // Retrieve your data from locaStorage
     let saveData = loadSavedData();
-    let alreadySwapped = [];
-
     let swappableDivs = $(".swappable");
-    let divArrangement = {};
+    let alreadySwapped = [];
+    let divArrangement = [];
+
+
 
     swappableDivs.each(function (index, div) {
         divArrangement[$(div).attr("id")] = $(div).attr("id");
@@ -63,15 +64,15 @@ function changePlacesBack() {
 
     $.each(saveData, function (key, value) {
         if ($.inArray(value, alreadySwapped) < 0) {
-            let key1 = getKeyByValue(divArrangement, key);
-            let key2 = getKeyByValue(divArrangement, value);
+            let id1 = getKeyByValue(divArrangement, key);
+            let id2 = getKeyByValue(divArrangement, value);
 
-            let temp = divArrangement[key1];
-            divArrangement[key1] = divArrangement[key2];
-            divArrangement[key2] = temp;
+            let temp = divArrangement[id1];
+            divArrangement[id1] = divArrangement[id2];
+            divArrangement[id2] = temp;
 
-            if (key1 !== key2) {
-                $("#" + key1).swap($("#" + key2));
+            if (id1 !== id2) {
+                $("#" + id1).swap($("#" + id2));
                 alreadySwapped.push(key);
             }
         }
@@ -206,7 +207,6 @@ function addSettingsHTML() {
     document.body.appendChild(modal[0]);
 }
 
-$.fn.swap = function (elem) {
-    elem = elem.jquery ? elem : $(elem);
-    $(document.createTextNode('')).insertBefore(this).before(elem.before(this)).remove();
+$.fn.swap = function (div) {
+    $(document.createTextNode('')).insertBefore(this).before(div.before(this)).remove();
 };
