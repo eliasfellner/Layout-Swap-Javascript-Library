@@ -1,30 +1,30 @@
 $(document).ready(function () {
     setRestrictive();
     addSettingsHTML();
-    addDraggableFunctionality();
+    addSwappableFunctionality();
     changePlacesBack();
 });
 
 let restrictive = true;
 
 function setRestrictive(){
-    restrictive = $("#disableRestrictiveDraggable").length ===0;
+    restrictive = $("#disableRestrictiveSwappable").length === 0;
 }
 
 
-function addDraggableFunctionality() {
+function addSwappableFunctionality() {
     //set who can be dragged to whom
-    let draggableDivs = $(".draggable");
+    let swappableDivs = $(".swappable");
 
-    //make divs draggable / revert to original position / stack: automatically changes z-index
-    draggableDivs.draggable({
+    //make divs swappable / revert to original position / stack: automatically changes z-index
+    swappableDivs.draggable({
         disabled: true,
         revert: true,
         revertDuration: 0,
-        stack: ".draggable"
+        stack: ".swappable"
     });
 
-    draggableDivs.each(function (index, div) {
+    swappableDivs.each(function (index, div) {
         if (restrictive){
             let width = $(div).width();
             let height = $(div).height();
@@ -36,7 +36,7 @@ function addDraggableFunctionality() {
         }
 
         $(div).droppable({
-            accept: restrictive ? acceptableKey : '.draggable',
+            accept: restrictive ? acceptableKey : '.swappable',
             classes: {
                 "ui-droppable-active": "dragOverlay",
                 "ui-droppable-hover": "dragOverlayActive"
@@ -54,10 +54,10 @@ function changePlacesBack() {
     let saveData = loadSavedData();
     let alreadySwapped = [];
 
-    let draggableDivs = $(".draggable");
+    let swappableDivs = $(".swappable");
     let divArrangement = {};
 
-    draggableDivs.each(function (index, div) {
+    swappableDivs.each(function (index, div) {
         divArrangement[$(div).attr("id")] = $(div).attr("id");
     });
 
@@ -103,10 +103,10 @@ function getKeyByValue(object, value) {
 }
 
 function setLocalStorageToDefault() {
-    let draggableDivs = $(".draggable");
+    let swappableDivs = $(".swappable");
     let saveData = {};
 
-    draggableDivs.each(function (index, div) {
+    swappableDivs.each(function (index, div) {
         saveData[$(div).attr("id")] = $(div).attr("id");
     });
 
@@ -119,15 +119,15 @@ function loadSavedData() {
 }
 
 function startEditMode() {
-    let draggableDivs = $(".draggable");
-    draggableDivs.draggable("enable");
-    draggableDivs.addClass("editModeActive");
+    let swappableDivs = $(".swappable");
+    swappableDivs.draggable("enable");
+    swappableDivs.addClass("editModeActive");
 }
 
 function endEditMode() {
-    let draggableDivs = $(".draggable");
-    draggableDivs.draggable("disable");
-    draggableDivs.removeClass("editModeActive");
+    let swappableDivs = $(".swappable");
+    swappableDivs.draggable("disable");
+    swappableDivs.removeClass("editModeActive");
 }
 
 function resetLocalStorage() {
@@ -149,7 +149,7 @@ function resetLocalStorage() {
 function addSettingsHTML() {
     //create settings element
     let settings = $(document.createElement("img"));
-    settings.prop("id", "openDraggableModal");
+    settings.prop("id", "openSwappableModal");
     settings.prop("src", "https://img.icons8.com/ios/80/000000/automatic-filled.png");
 
     //create modal window (fullscreen)

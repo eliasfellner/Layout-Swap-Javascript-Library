@@ -1,8 +1,8 @@
-.draggable.dragOverlay::before{
+.swappable.dragOverlay::before{
     background-color: rgba(241, 67, 63, 0.4);
 }
 
-.draggable.dragOverlayActive::before{
+.swappable.dragOverlayActive::before{
     background-color: rgba(169, 207, 84, 0.4);
 }
 
@@ -16,11 +16,11 @@
     animation-fill-mode: both;
 }
 
-.draggable:before{
+.swappable:before{
     transition: background-color 0.2s ease;
 }
 
-#openDraggableModal{
+#openSwappableModal{
     position: fixed;
     top: 60px;
     right: 10px;
